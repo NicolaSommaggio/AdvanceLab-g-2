@@ -663,6 +663,55 @@ float offset,  eOffset, gain,  eGain;
 	return out;
 }
 
+double Landau(string filename1)
+{
+
+string filename = filename1;
+
+float location, elocation, sigma, esigma, norm, mpv; //in the root landau function mu is not the mpv
+
+	ReadTree(filename.c_str(), true);
+	TSpectrum t;
+	TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
+	hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");
+	
+//
+	t.Search(hMax,2,"",0.01);
+
+	//	int nPeaks = t.GetNPeaks() + 1;
+
+
+	//FitFunction* ff = new FitFunction(nPeaks);
+	double xmax = hMax->GetXaxis()->GetXmax();
+	double xmin = hMax->GetXaxis()->GetXmin() + (xmax - hMax->GetXaxis()->GetXmin())/90.0;
+
+	//TF1* f = new TF1("fitFun", ff, xmin, xmax, nPeaks + 4, "ff"); 
+	TF1* f = new TF1("fitfun", "[0]*TMath::Landau(x,[1],[2])", xmin, xmax); 
+	f->SetNpx(1000);
+
+	f->SetParNames("norm","location", "sigma");
+	f->SetParameters(hMax->Integral("width"),*t.GetPositionX(),1.0);
+			 //			 hMax->Integral(2,90,"width"));
+
+	f->SetParLimits(0, hMax->Integral("width")/3.0, hMax->Integral("width")*3.0);
+
+
+	hMax->Fit(f, "EMRQ+");
+	TCanvas c;
+	hMax->Draw();
+
+	location = f->GetParameter(1);
+	elocation = f->GetParError(1);
+	sigma = f->GetParameter(2);
+	esigma = f->GetParError(2);
+	norm = f-> GetParameter(0);
+
+	TF1* l = new TF1("fitted", norm*TMath::Landau(location, sigma), xmin, xmax);
+	mpv = l->GetMaximumX();
+
+	return mpv;
+}
+
 
 TGraphErrors fitGain(string files,int mute=0)
 {
