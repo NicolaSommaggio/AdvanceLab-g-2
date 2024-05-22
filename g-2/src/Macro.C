@@ -690,7 +690,7 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	f->SetNpx(1000);
 
 	f->SetParNames("norm","location", "sigma");
-	f->SetParameters(hMax->Integral("width"),*t.GetPositionX(),1.0);
+	f->SetParameters(hMax->Integral("width"),*t.GetPositionX(),1.0); // sigma I guessed 1 but we must look at the spectra
 			 //			 hMax->Integral(2,90,"width"));
 
 	f->SetParLimits(0, hMax->Integral("width")/3.0, hMax->Integral("width")*3.0);
