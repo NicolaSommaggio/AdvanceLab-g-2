@@ -52,7 +52,7 @@ TH1F* HISTO(const char *fileName, bool negative)
 {
 
 	// dichiaro le struct
-	InfoAcq::chSettings chSet1;
+	InfoAcq::chSettings chSet1;     //chSetting is a struct defined to be part of the class InfoAcq
 	InfoAcq::chSettings chSet2;
 	InfoAcq::samplingSettings sampSet;
 	
