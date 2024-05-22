@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "try.C": "cpp",
+        "visual.C": "cpp",
+        "findMaximumSiPM.C": "cpp",
+        "findMaximumSiPM22.C": "cpp",
+        "findMaximumSiPMv2.C": "cpp",
+        "Macro.C": "cpp"
+    },
+
+    "workbench.colorCustomizations": {
+
+        "editorError.foreground": "#1e1e1e",  
+        "editorWarning.foreground": "#1e1e1e",
+        "editorInfo.background": "#1e1e1e",  
+    
+        },
+    
+        "C_Cpp.errorSquiggles": "disabled",
+    
+        "css.lint.emptyRules": "ignore"
+}
