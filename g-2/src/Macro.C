@@ -664,18 +664,30 @@ float offset,  eOffset, gain,  eGain;
 }
 
 double Landau(string filename1)
+//double Landau()
 {
 
 string filename = filename1;
 
 float location, elocation, sigma, esigma, norm, mpv; //in the root landau function mu is not the mpv
 
-	ReadTree(filename.c_str(), true);
+	ReadTree(filename.c_str(), true);  //this part must be un-commented
 	TSpectrum t;
 	TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
 	hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");
 	
-//
+
+/*
+	//FROM HERE
+	// I want to test this function on Laudau distributed Histogram
+	
+	TF1* g = new TF1("g", "TMath::Landau(x,0,1)", -20, 100); 
+	TH1F* hMax = new TH1F("try", "Hist randomly Landau distributed", 100,-20,100);
+	hMax->FillRandom("g",10000);
+
+	TSpectrum t;
+	//TO HERE
+*/
 	t.Search(hMax,2,"",0.01);
 
 	//	int nPeaks = t.GetNPeaks() + 1;
@@ -709,9 +721,13 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	TF1* l = new TF1("fitted", norm*TMath::Landau(location, sigma), xmin, xmax);
 	mpv = l->GetMaximumX();
 
+	TArrow* arrow = new TArrow(mpv, 2000, mpv, 1);
+	arrow -> SetLineWidth(2);
+	arrow -> SetFillColor(0);
+	arrow -> Draw("SAME");
+
 	return mpv;
 }
-
 
 TGraphErrors fitGain(string files,int mute=0)
 {
