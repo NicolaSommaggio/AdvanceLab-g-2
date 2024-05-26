@@ -66,7 +66,7 @@ float adc_to_mv(int16_t raw, int16_t rangeIndex, int16_t maxADCValue)
 	return (raw * inputRanges[rangeIndex])*1. / maxADCValue;
 }
 
-TH1F* HISTO(const char *fileName, bool negative)
+TH1F* HISTO(const char *fileName, bool negative, int binNumber)
 {
 
 	// dichiaro le struct
@@ -131,7 +131,7 @@ TH1F* HISTO(const char *fileName, bool negative)
 	// spettro in energia
 	float xmin= negative? adc_to_mv(sampSet.max_adc_value,chSet1.range,-1*sampSet.max_adc_value) : 0 ; 
 	float xmax = negative? 0 : adc_to_mv(sampSet.max_adc_value,chSet1.range,sampSet.max_adc_value) ;
-	TH1F* spectrumMaximum = new TH1F( "hMax", "Maxima Distribution Spectrum", 128, xmin,xmax );
+	TH1F* spectrumMaximum = new TH1F( "hMax", "Maxima Distribution Spectrum", binNumber, xmin,xmax );
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //	TH1F* spectrumMaximum = new TH1F( "hMax", "Maximum Spectrum", 256, xmin,xmax );
 	cerr<<" Range   : "<<xmax-xmin<<" mV "<<endl;
@@ -671,11 +671,12 @@ string filename = filename1;
 
 float location, elocation, sigma, esigma, norm, mpv; //in the root landau function mu is not the mpv
 
-	ReadTree(filename.c_str(), true);  //this part must be un-commented
+	ReadTree(filename.c_str(), false);  //this part must be un-commented
 	TSpectrum t;
 	TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
 	hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");
 	
+	hMax -> Rebin(3);
 
 /*
 	//FROM HERE
@@ -702,7 +703,7 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	f->SetNpx(1000);
 
 	f->SetParNames("norm","location", "sigma");
-	f->SetParameters(hMax->Integral("width"),*t.GetPositionX(),1.0); // sigma I guessed 1 but we must look at the spectra
+	f->SetParameters(hMax->Integral("width"),50,20); // sigma I guessed 1 but we must look at the spectra
 			 //			 hMax->Integral(2,90,"width"));
 
 	f->SetParLimits(0, hMax->Integral("width")/3.0, hMax->Integral("width")*3.0);
