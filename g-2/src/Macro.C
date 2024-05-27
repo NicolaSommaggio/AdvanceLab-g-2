@@ -663,32 +663,17 @@ float offset,  eOffset, gain,  eGain;
 	return out;
 }
 
-double Landau(string filename1)
-//double Landau()
+double Landau(const char *nomefile, int Nbins)
 {
-
-string filename = filename1;
 
 float location, elocation, sigma, esigma, norm, mpv; //in the root landau function mu is not the mpv
 
-	ReadTree(filename.c_str(), false);  //this part must be un-commented
+	//ReadTree(filename.c_str(), false);  
 	TSpectrum t;
+	HISTO(nomefile, false , Nbins );
 	TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
 	hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");
-	
-	hMax -> Rebin(3);
 
-/*
-	//FROM HERE
-	// I want to test this function on Laudau distributed Histogram
-	
-	TF1* g = new TF1("g", "TMath::Landau(x,0,1)", -20, 100); 
-	TH1F* hMax = new TH1F("try", "Hist randomly Landau distributed", 100,-20,100);
-	hMax->FillRandom("g",10000);
-
-	TSpectrum t;
-	//TO HERE
-*/
 	t.Search(hMax,2,"",0.01);
 
 	//	int nPeaks = t.GetNPeaks() + 1;
@@ -697,20 +682,16 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	//FitFunction* ff = new FitFunction(nPeaks);
 	double xmax = hMax->GetXaxis()->GetXmax();
 	double xmin = hMax->GetXaxis()->GetXmin() + (xmax - hMax->GetXaxis()->GetXmin())/90.0;
-
+	
 	//TF1* f = new TF1("fitFun", ff, xmin, xmax, nPeaks + 4, "ff"); 
 	TF1* f = new TF1("fitfun", "[0]*TMath::Landau(x,[1],[2])", xmin, xmax); 
 	f->SetNpx(1000);
 
 	f->SetParNames("norm","location", "sigma");
-	f->SetParameters(hMax->Integral("width"),50,20); // sigma I guessed 1 but we must look at the spectra
+	f->SetParameters(60.0,95.0,70.0); 
 			 //			 hMax->Integral(2,90,"width"));
 
-	f->SetParLimits(0, hMax->Integral("width")/3.0, hMax->Integral("width")*3.0);
-
-
 	hMax->Fit(f, "EMRQ+");
-	TCanvas c;
 	hMax->Draw();
 
 	location = f->GetParameter(1);
@@ -719,13 +700,12 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	esigma = f->GetParError(2);
 	norm = f-> GetParameter(0);
 
-	TF1* l = new TF1("fitted", norm*TMath::Landau(location, sigma), xmin, xmax);
-	mpv = l->GetMaximumX();
+	mpv = f->GetMaximumX();
 
-	TArrow* arrow = new TArrow(mpv, 2000, mpv, 1);
-	arrow -> SetLineWidth(2);
+	/*TArrow* arrow = new TArrow(mpv, 140, mpv, 0);
+	arrow -> SetLineWidth(1);
 	arrow -> SetFillColor(0);
-	arrow -> Draw("SAME");
+	arrow -> Draw("SAME");*/
 
 	return mpv;
 }
