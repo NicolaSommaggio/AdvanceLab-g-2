@@ -157,6 +157,84 @@ TH1F* HISTO(const char *fileName, bool negative, int binNumber)
 }
 
 
+double FindEntries(const char *filename, int Nbins, double xmin, double xmax){
+
+HISTO(filename, false , Nbins );
+TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
+hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");	
+
+int firstbin = hMax->FindBin(xmin);
+int secondbin = hMax->FindBin(xmax);
+
+double integral=hMax->Integral(firstbin,secondbin);
+
+cout << TMath::Sqrt(integral) << endl;
+return integral;
+
+}
+
+void linear(const char *filename, int N, double xmin, double xmax){
+
+    ifstream file(filename);
+    if (file.fail()){
+        cout << "the file does not open correctly!" << endl;
+    }
+
+    double x[N];
+    double y[N];
+    double yerror[N];
+    double xerror[N];
+
+    for(int i=0; i<N; i++){
+      xerror[i]=0;
+    }
+
+    int i=0;
+    while(true){
+      file >> x[i] >> y[i] >> yerror[i];
+      i++;
+      if ( file.eof() ) break;
+    }
+
+    //file.close();
+
+    TCanvas *c1= new TCanvas();
+
+    TGraphErrors *graph = new TGraphErrors (N,x,y,xerror,yerror); //Npoints, x ,y , ex, ey
+
+    	// Define a function which fits the points
+    	TF1 *fitfun = new TF1("fitfun","[0]+[1]*x",xmin,xmax);
+      fitfun->SetParNames("Intercept", "Slope");
+      fitfun->SetParameter(0,0);
+      fitfun->SetParameter(1,1);
+    	// Fit
+
+    	graph->Fit(fitfun, "RQN+");
+
+		auto frame = c1->DrawFrame(-10, -10, 310, 800);
+		frame->GetXaxis()->SetTitle("displacement [mm]");
+		frame->GetYaxis()->SetTitle("no signal counts");
+		graph->SetMarkerColor(kAzure-3);
+      graph->SetMarkerStyle(20);
+      graph->SetMarkerSize(1.1);
+		graph->Draw("p");
+		fitfun->Draw("SAME");
+
+    	// Get the parameters
+      double m, q, sigma_m, sigma_q;
+    	m = fitfun->GetParameter(1);
+    	q = fitfun->GetParameter(0);
+      sigma_m= fitfun->GetParError(1);
+      sigma_q= fitfun->GetParError(0);
+
+    	cout << "Slope = " << m << " +/- " << sigma_m << endl << "Intercept = " << q << " +/- " << sigma_q << endl;
+      //auto st1 = new TStyle("st1","my style");
+      //st1->SetOptFit(0111);
+      //st1->cd();
+
+
+}
+
 
 void ReadTree(const char *fileName, bool negative)
 {
@@ -709,6 +787,63 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 
 	return mpv;
 }
+
+int npeaks=15;
+Double_t fpeaks(Double_t *x, Double_t *par) {
+   Double_t result = par[0]*TMath::Landau(x[0],par[1],par[2]);
+   for (Int_t p=0;p<npeaks;p++) {
+      Double_t norm  = par[3*p+3]; // "height"
+      Double_t mean  = par[3*p+4];
+      Double_t sigma = par[3*p+5];
+
+      result += norm*TMath::Gaus(x[0],mean,sigma);
+   }
+   return result;
+}
+
+void MultiPeaksLandau(const char *filename, int Nbins) {
+   npeaks = 15;
+
+   HISTO(filename, false , Nbins );
+   TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
+   hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");
+
+   Double_t par[3000];
+   TF1 *f = new TF1("f",fpeaks,0,350,3+3*npeaks);
+   f->SetNpx(1000);
+   f->SetParameters(par);
+
+   // Use TSpectrum to find the peak candidates
+   TSpectrum *s = new TSpectrum(2*npeaks);
+   Int_t nfound = s->Search(hMax,1,"",0.30);
+   printf("Found %d candidate peaks to fit\n",nfound);
+ 
+   // Loop on all found peaks
+   par[0] = 100;
+   par[1] = 100;
+   par[2] = 100;
+   npeaks = 0;
+   Double_t *xpeaks;
+   xpeaks = s->GetPositionX(); //The number of found peaks and their positions are written into the members fNpeaks and fPositionX
+   for (int p=0;p<nfound;p++) {
+      Double_t xp = xpeaks[p];
+      Int_t bin = hMax->GetXaxis()->FindBin(xp);
+      Double_t yp = hMax->GetBinContent(bin); // to find the "y" value of a peak to initialize the height value for the peak
+      par[3*npeaks+3] = yp; // "height"
+      par[3*npeaks+4] = xp; // "mean"
+      par[3*npeaks+5] = 3; // "sigma"
+      npeaks++;
+   }
+   printf("Now fitting: Be patient\n");
+   TF1 *fit = new TF1("fit",fpeaks,0,350,3+3*npeaks);
+   fit->SetParameters(par);
+   fit->SetNpx(1000);
+   hMax->Fit("fit", "EMRQ+");
+   hMax->Draw();
+
+}
+   
+
 
 TGraphErrors fitGain(string files,int mute=0)
 {
