@@ -779,7 +779,10 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	norm = f-> GetParameter(0);
 
 	mpv = f->GetMaximumX();
-
+	double* fitres=(double*) new double[3];
+	fitres[0]=norm;
+	fitres[1]=location;
+	fitres[2]=sigma;
 	/*TArrow* arrow = new TArrow(mpv, 140, mpv, 0);
 	arrow -> SetLineWidth(1);
 	arrow -> SetFillColor(0);
@@ -839,6 +842,71 @@ void MultiPeaksLandau(const char *filename, int Nbins) {
    fit->SetParameters(par);
    fit->SetNpx(1000);
    hMax->Fit("fit", "EMRQ+");
+   hMax->Draw();
+
+}
+Double_t fpeaksJDP(Double_t *x, Double_t *par) {
+	Double_t result=0;
+	Double_t Lnorm=par[0];
+	Double_t Llocation=par[1];
+	Double_t Lsigma=par[2];
+	
+   Double_t gain=par[3];
+   Double_t offgain=par[4];
+   Double_t sigmagrowth=par[5];
+   double_t sigmaoffset=par[6];
+   double_t npeaks=par[7];
+   for (Int_t p=0;p<npeaks;p++) {
+      Double_t mean  = gain*p+offgain;
+	  Double_t norm  = Lnorm*TMath::Landau(mean,Llocation,Lsigma);
+      Double_t sigma = sigmagrowth*sqrt(p)+sigmaoffset;
+
+      result += norm*TMath::Gaus(x[0],mean,sigma);
+   }
+   return result;
+}
+void MultiPeaksLandauJDP(const char *filename, int Nbins=300,double xmin=5,double xmax=60) {
+   
+   HISTO(filename, false , Nbins );
+   TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
+   hMax->GetXaxis()->SetTitle("Pulse Height[mV] ");
+   Double_t par[3000];
+   TF1 *f = new TF1("f",fpeaksJDP,xmin,xmax,8);
+   f->SetNpx(1000);
+   f->SetParameters(par);
+
+	TSpectrum* t=new TSpectrum();
+	t->Search(hMax,1,"",0.1);
+	int npeaks=0;
+	for(int i=0;i<t->GetNPeaks();i++)
+	{
+		if(t->GetPositionX()[i]>xmin &&t->GetPositionX()[i]<xmax)
+		npeaks=npeaks+1;
+	}
+   // Loop on all found peaks
+   par[0] = 200;
+   f->SetParLimits(0,100,300);
+   par[1] = 70;
+   f->SetParLimits(1,40,80);
+   par[2] = 50;
+   f->SetParLimits(2,10,80);
+   par[3]= t->GetPositionX()[1]-t->GetPositionX()[0];
+   f->SetParLimits(3,5,15);
+   par[4]= t->GetPositionX()[0];
+   f->SetParLimits(4,5,20);
+   par[5]=0.1;
+   f->SetParLimits(5,0,0.5);
+   par[6]=1.8;
+   f->SetParLimits(7,0.5,10);
+   par[7]=npeaks;
+   f->SetParLimits(7,5,25);
+   printf("Now fitting: Be patient\n");
+   
+   f->SetParameters(par);
+   f->SetNpx(1000);
+TCanvas* c1=new TCanvas();
+c1->cd();
+   hMax->Fit("f", "EMR+");
    hMax->Draw();
 
 }
