@@ -172,7 +172,7 @@ cout << TMath::Sqrt(integral) << endl;
 
 cout << "efficiency    " << (hMax->GetEntries()-integral)/(hMax->GetEntries())*100 << "%" << endl;
 
-
+hMax->Draw();
 return integral;
 
 }
@@ -796,6 +796,7 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 }
 
 int npeaks=15;
+//definition of f for multi peaks (not reliable)
 Double_t fpeaks(Double_t *x, Double_t *par) {
    Double_t result = par[0]*TMath::Landau(x[0],par[1],par[2]);
    for (Int_t p=0;p<npeaks;p++) {
@@ -808,7 +809,7 @@ Double_t fpeaks(Double_t *x, Double_t *par) {
    return result;
 }
 
-void MultiPeaksLandau(const char *filename, int Nbins) {
+void MultiPeaksLandaunotreliable(const char *filename, int Nbins) {
    npeaks = 15;
 
    HISTO(filename, false , Nbins );
@@ -872,7 +873,7 @@ Double_t fpeaksJDP(Double_t *x, Double_t *par) {
    }
    return result;
 }
-void MultiPeaksLandauJDP(const char *filename, int Nbins=300,double xmin=5,double xmax=60) {
+void MultiPeaksLandau(const char *filename, int Nbins=300,double xmin=5,double xmax=60) {
    
    HISTO(filename, false , Nbins );
    TH1F* hMax = (TH1F*)gDirectory->FindObject("hMax");
