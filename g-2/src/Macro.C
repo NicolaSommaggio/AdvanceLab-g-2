@@ -773,7 +773,7 @@ float location, elocation, sigma, esigma, norm, mpv; //in the root landau functi
 	f->SetParameters(60.0,95.0,70.0); 
 			 //			 hMax->Integral(2,90,"width"));
 
-	hMax->Fit(f, "EMRQ+");
+	hMax->Fit(f, "EMR+");
 	hMax->Draw();
 
 	location = f->GetParameter(1);
@@ -902,7 +902,7 @@ void MultiPeaksLandauJDP(const char *filename, int Nbins=300,double xmin=5,doubl
    par[4]= t->GetPositionX()[0];
    f->SetParLimits(4,5,20);
    par[5]=0.1;
-   f->SetParLimits(5,0,0.5);
+   f->SetParLimits(5,0,1);
    par[6]=1.8;
    f->SetParLimits(7,0.5,10);
    par[7]=npeaks;
