@@ -169,6 +169,10 @@ int secondbin = hMax->FindBin(xmax);
 double integral=hMax->Integral(firstbin,secondbin);
 
 cout << TMath::Sqrt(integral) << endl;
+
+cout << "efficiency    " << (hMax->GetEntries()-integral)/(hMax->GetEntries())*100 << "%" << endl;
+
+
 return integral;
 
 }
@@ -840,6 +844,9 @@ void MultiPeaksLandau(const char *filename, int Nbins) {
    fit->SetNpx(1000);
    hMax->Fit("fit", "EMRQ+");
    hMax->Draw();
+   cout << "approx mpv=" << fit->GetParameter(1) << "+/-" << fit->GetParError(1) << endl;
+
+   
 
 }
    
