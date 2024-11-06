@@ -1,0 +1,6 @@
+Data/GainResults/test4cha1.root	30.5	4
+Data/GainResults/test4cha2.root	31.0	4
+Data/GainResults/test4cha3.root	31.5	4
+Data/GainResults/test4cha4.root	32.0	4
+Data/GainResults/test4cha5.root	32.5	4
+Data/GainResults/test4cha6.root	33.0	4

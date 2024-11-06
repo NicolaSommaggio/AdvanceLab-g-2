@@ -951,8 +951,8 @@ TGraphErrors fitGain(string files,int mute=0)
 	TF1 f = TF1("linfit", "pol1");
 	g.Fit(&f, "EM");
 	
-	TCanvas c5= TCanvas();
-	c5.cd();
+	TCanvas* c5=new TCanvas("ciao");
+	
 	g.GetXaxis()->SetTitle("V");
 	g.GetYaxis()->SetTitle("gain ");
 	g.Draw("AP");
@@ -965,10 +965,14 @@ TGraphErrors fitGain(string files,int mute=0)
 	c.Fit(&d, "EM");
 
 	cout<<"Breakdown V:	"<<d.GetParameter(0)<<"	+-	"<<d.GetParError(0)<<endl;
-	TLegend *leg=new TLegend(0.2,0.2,0.4,0.4);
-	c5.SetGrid();
-
+	
 	//GRAPHICAL: move the legend in the top left positions
+c5->cd();
+
+g.Draw();
+TLegend *leg=new TLegend(0.2,0.2,0.4,0.4);
+	c5->SetGrid();
+
 		gPad->Update();
 		TPaveStats *st = (TPaveStats*)g.FindObject("stats");
 		
@@ -977,11 +981,11 @@ TGraphErrors fitGain(string files,int mute=0)
 		st->SetY1NDC(0.68); //new x start position
 		st->SetY2NDC(0.88); //new x end position
 		
-		c5.Draw();
+		c5->Draw();
 	
 	
 
-	if (mute==1) { c5.Close(); }
+	if (mute==1) { c5->Close(); }
 
 	return g;
 }
@@ -1283,6 +1287,7 @@ return rate;
 }
 
 
+
 void grafico(string gainfile,string darkfile)
 {
 	ifstream fin(darkfile.c_str());
@@ -1335,6 +1340,68 @@ void grafico(string gainfile,string darkfile)
    axis->SetTextSize(2);
    axis->SetTitle("Dark Count Rate (Hz)");
    axis->Draw();
+   
+/*g->GetYaxis()->SetTitle("V");
+	g->GetXaxis()->SetTitle("gain ");
+	g->Draw("AP");
+	cout<<"Breakdown V:	"<<f->GetParameter(0)<<"	+-	"<<f->GetParError(0)<<endl;
+	TLegend *leg=new TLegend(0.2,0.2,0.4,0.4);
+	c5->SetGrid();
+
+	gPad->Update();
+	TPaveStats *st = (TPaveStats*)g->FindObject("stats");
+	st->SetX1NDC(0.15); //new x start position
+	st->SetX2NDC(0.5); //new x end position
+	st->SetY1NDC(0.68); //new x start position
+	st->SetY2NDC(0.88); //new x end position
+	c5->Draw();
+
+	string imgname = "graphs/gain.png";
+	c.SaveAs(imgname.c_str());
+	imgname = "graphs/gain.tex";
+	c.SaveAs(imgname.c_str());
+	imgname = "graphs/gain.C";
+	c.SaveAs(imgname.c_str());
+	*/
+	
+}
+
+
+TGraphErrors* PlotDark(string darkfile)
+{
+	ifstream fin(darkfile.c_str());
+	string filename;
+	vector<float> rate, erate, V,eV;
+	float tmpV;
+	gStyle->SetOptFit();
+	
+	std::array<double, 2> data;
+	while(fin >> filename >> tmpV)
+	{
+		cout<<"1"<<endl;
+		data=DarkCountlight(filename.c_str(),0);
+		cout<<"2"<<endl;
+		rate.push_back(data[0]);
+		erate.push_back(data[1]);
+		V.push_back(tmpV);
+		eV.push_back(0.04);
+		cout<<data[0]<<"	"<<data[1]<<endl;
+	}
+	cout<<"3"<<endl;
+	TGraphErrors* dark = new TGraphErrors(V.size(),&V[0] , &rate[0], &eV[0], &erate[0]);
+	TF1 f = TF1("linfit", "pol1");
+	dark->Fit(&f, "EMN");
+
+	TCanvas* canvas=new TCanvas("questo","quello");
+
+	canvas->cd();
+	canvas->SetGrid();
+	dark->Draw("AP");
+	dark->GetXaxis()->SetTitle("V");
+	dark->GetYaxis()->SetTitle("DarkCount Rate Hz");
+	dark->SetTitle("DarkCounts");
+	
+	return dark;
    
 /*g->GetYaxis()->SetTitle("V");
 	g->GetXaxis()->SetTitle("gain ");
