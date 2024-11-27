@@ -1320,23 +1320,23 @@ void grafico(string gainfile,string darkfile)
 		if(rate[i]>maxrate)
 		{maxrate=rate[i];}
 	}
-	auto frame = canvas->DrawFrame(30.3, 5, 33.2, 20);
+	auto frame = canvas->DrawFrame(30.3, 5, 34.8, 20);
 	frame->GetXaxis()->SetTitle("V");
 	frame->GetYaxis()->SetTitle("gain (mV)");
 	gainG.DrawClone("p");
 	Float_t rightmax = 1.1*maxrate;
     Float_t scale = gPad->GetUymax()/rightmax;
 	cout<<rightmax<<"	"<<gPad->GetUymax()<<endl;
-	dark->SetLineColor(3);
+	dark->SetLineColor(9);
 	dark->Scale(scale);
 
 	dark->Draw("same P");
 	
 	TGaxis *axis = new TGaxis(gPad->GetUxmax(),gPad->GetUymin(),gPad->GetUxmax(), gPad->GetUymax(),
 	0,rightmax,510,"+L");
-   axis->SetLineColor(3);
-   axis->SetLabelColor(3);
-   axis->SetTitleColor(3);
+   axis->SetLineColor(9);
+   axis->SetLabelColor(9);
+   axis->SetTitleColor(9);
    axis->SetTextSize(2);
    axis->SetTitle("Dark Count Rate (Hz)");
    axis->Draw();
@@ -1378,6 +1378,7 @@ TGraphErrors* PlotDark(string darkfile)
 	std::array<double, 2> data;
 	while(fin >> filename >> tmpV)
 	{
+
 		cout<<"1"<<endl;
 		data=DarkCountlight(filename.c_str(),0);
 		cout<<"2"<<endl;
