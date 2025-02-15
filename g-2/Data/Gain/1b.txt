@@ -6,3 +6,6 @@ Data/Gain/1b320.root 32.0	4
 Data/Gain/1b325.root 32.5	4
 Data/Gain/1b330.root 33.0	4
 Data/Gain/1b335.root 33.5	4
+Data/Gain/1b340.root 34.0	4
+Data/Gain/1b345.root 34.5	4
+Data/Gain/1b350.root 35.0	4

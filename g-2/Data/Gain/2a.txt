@@ -1,0 +1,10 @@
+Data/Gain/2a300.root 30.0	4
+Data/Gain/2a305.root 30.5	4
+Data/Gain/2a310.root 31.0	4
+Data/Gain/2a315.root 31.5	4
+Data/Gain/2a320.root 32.0	4
+Data/Gain/2a325.root 32.5	4
+Data/Gain/2a330.root 33.0	4
+Data/Gain/2a335.root 33.5	4
+Data/Gain/2a340.root 34.0	4
+Data/Gain/2a345.root 34.5	4

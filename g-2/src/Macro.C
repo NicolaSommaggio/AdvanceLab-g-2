@@ -32,7 +32,7 @@
 Function descriptions:
 1) adc_to_mv converts the data from arbitrary units to mV
 2) HISTO plot Histogram for Gain
-3)Read Tree
+3) Read Tree
 4) class FitFunction NOT USED JUST IGNORE IT
 5) fitfun model to fit poisson
 6) fitfunexp another model just used to test NOT USED
@@ -1320,7 +1320,7 @@ void grafico(string gainfile,string darkfile)
 		if(rate[i]>maxrate)
 		{maxrate=rate[i];}
 	}
-	auto frame = canvas->DrawFrame(30.3, 5, 34.8, 20);
+	auto frame = canvas->DrawFrame(30.3, 0, 34.8, 20);
 	frame->GetXaxis()->SetTitle("V");
 	frame->GetYaxis()->SetTitle("gain (mV)");
 	gainG.DrawClone("p");
