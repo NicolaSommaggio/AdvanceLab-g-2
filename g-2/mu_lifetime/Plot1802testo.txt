@@ -1,0 +1,70 @@
+[#1] INFO:DataHandling -- RooTreeDataStore::loadValues(data) Skipping event #6 because cal_time_var cannot accommodate the value 0.254857
+[#1] INFO:DataHandling -- RooTreeDataStore::loadValues(data) Skipping event #16 because cal_time_var cannot accommodate the value 0.224857
+[#1] INFO:DataHandling -- RooTreeDataStore::loadValues(data) Skipping event #40 because cal_time_var cannot accommodate the value 0.46486
+[#1] INFO:DataHandling -- RooTreeDataStore::loadValues(data) Skipping event #47 because cal_time_var cannot accommodate the value 0.434859
+[#1] INFO:DataHandling -- RooTreeDataStore::loadValues(data) Skipping ...
+[#0] WARNING:DataHandling -- RooTreeDataStore::loadValues(data) Ignored 803 out-of-range events
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- using CPU computation library compiled with -mavx2
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_data) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 1500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(exponential_Int[cal_time_var]) using numeric integrator RooIntegrator1D to calculate Int(cal_time_var)
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       17832.94163 Edm =      -1037.184057 NCalls =     13
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state:
+  Minimum value : 17534.69485
+  Edm           : 74.61716835
+  Internal parameters:  [    -0.6435011088      0.927295218      1.635716022]
+  Internal gradient  :  [     -18.49839407      650.2303741      4.194004309]
+  Internal covariance matrix:
+[[    0.036475288              0              0]
+ [              0  0.00067513243              0]
+ [              0              0    0.030784728]]]
+Info in <Minuit2>: MnSeedGenerator Initial state
+  Minimum value : 17534.69485
+  Edm           : 74.61716835
+  Internal parameters:  [    -0.6435011088      0.927295218      1.635716022]
+  Internal gradient  :  [     -18.49839407      650.2303741      4.194004309]
+  Internal covariance matrix:
+[[    0.036475288              0              0]
+ [              0  0.00067513243              0]
+ [              0              0    0.030784728]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 1500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       17534.69485 Edm =       74.61716835 NCalls =     27
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =        17466.7786 Edm =     0.01652864564 NCalls =     39
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       17466.75656 Edm =    0.007450914091 NCalls =     47
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       17466.29202 Edm =      0.4389616526 NCalls =     63
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =        17465.3987 Edm =       1.558964679 NCalls =     77
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       17464.85188 Edm =       1.504904174 NCalls =     90
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       17462.48577 Edm =      0.2528976165 NCalls =    103
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       17462.42821 Edm =     0.01397994601 NCalls =    113
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       17462.41669 Edm =    0.004507383875 NCalls =    126
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =        17462.4021 Edm =     0.01593848662 NCalls =    140
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       17462.39453 Edm =      0.0235023326 NCalls =    151
+Info in <Minuit2>: VariableMetricBuilder   11 - FCN =       17462.36922 Edm =     0.01353121606 NCalls =    160
+Info in <Minuit2>: VariableMetricBuilder   12 - FCN =       17462.33516 Edm =     0.01360570246 NCalls =    177
+Info in <Minuit2>: VariableMetricBuilder   13 - FCN =       17462.32436 Edm =     0.04738263041 NCalls =    187
+Info in <Minuit2>: VariableMetricBuilder   14 - FCN =       17462.22395 Edm =    0.008167538151 NCalls =    200
+Info in <Minuit2>: VariableMetricBuilder   15 - FCN =       17462.21979 Edm =     0.01461859239 NCalls =    208
+Info in <Minuit2>: VariableMetricBuilder   16 - FCN =       17462.19959 Edm =     0.01110059539 NCalls =    217
+Info in <Minuit2>: VariableMetricBuilder   17 - FCN =       17462.18149 Edm =    0.007630970133 NCalls =    225
+Info in <Minuit2>: VariableMetricBuilder   18 - FCN =       17462.17209 Edm =    0.008171203034 NCalls =    235
+Info in <Minuit2>: VariableMetricBuilder   19 - FCN =       17462.16433 Edm =    0.001509772125 NCalls =    243
+Info in <Minuit2>: VariableMetricBuilder   20 - FCN =       17462.16238 Edm =    0.000822417817 NCalls =    252
+Info in <Minuit2>: VariableMetricBuilder   21 - FCN =       17462.16174 Edm =   6.352213673e-05 NCalls =    260
+Info in <Minuit2>: VariableMetricBuilder After Hessian
+Info in <Minuit2>: VariableMetricBuilder   22 - FCN =       17462.16174 Edm =   0.0002464997207 NCalls =    280
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 17462.1617356555726
+Edm   = 0.000246499720670063515
+Nfcn  = 280
+bl        = 0.138571     +/-  0.30657   (limited)
+fraction          = 0.773998     +/-  0.0727704 (limited)
+tau       = 2.67816      +/-  0.205772  (limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 1500
+Info in <Minuit2>: Minuit2Minimizer::Hesse Hesse is valid - matrix is accurate
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+[#1] INFO:NumericIntegration -- RooRealIntegral::init(exponential_Int[cal_time_var]) using numeric integrator RooIntegrator1D to calculate Int(cal_time_var)
+Info in <TCanvas::MakeDefCanvas>:  created default TCanvas with name c1

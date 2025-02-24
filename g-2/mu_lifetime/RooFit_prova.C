@@ -76,9 +76,9 @@ void RooFit_prova(){
     RooDataSet data("data", "data", RooArgSet(cal_time_var), Import(*data_tree));
 
     //fit parameters
-    RooRealVar tau("tau", "mean lifetime",2.2, 2.0, 3.); 
+    RooRealVar tau("tau", "mean lifetime",2.2, 1.8, 3.5); 
 
-    RooRealVar bl("bl", "baseline", 1, 0, 5);
+    RooRealVar bl("bl", "baseline", 1, 50, 200);
 
     RooRealVar Nf("Nf", "Nf", 4200, 3500, 5500);
 
