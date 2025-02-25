@@ -33,7 +33,7 @@ void RooFit_prova(){
 
     //cout << 0.1*pendenza+intercetta << endl;
 
-    ifstream infile("output.txt");
+    ifstream infile("/home/nicola/Scrivania/LAB/AdvanceLab-g-2/g-2/Data/Fondo/output.txt");
     while(getline(infile,line))
     {
         stringstream ss(line);
@@ -53,13 +53,13 @@ void RooFit_prova(){
 
     file->Close();
 
-   /* struct RooFit_prova
+    struct RooFit_prova
     {
         double time;
     };
 
     RooFit_prova tempo;
-    */
+    
 
     TFile *File = TFile::Open("myFile.root", "READ");
 
@@ -67,7 +67,7 @@ void RooFit_prova(){
 
     TBranch *branch = data_tree->GetBranch("cal_time_var");
 
-    //branch->SetAddress(&tempo.time);
+    branch->SetAddress(&tempo.time);
 
     RooRealVar cal_time_var("cal_time_var", "cal_time_var", 0.5, 15);
 
@@ -76,48 +76,66 @@ void RooFit_prova(){
     RooDataSet data("data", "data", RooArgSet(cal_time_var), Import(*data_tree));
 
     //fit parameters
-    RooRealVar tau("tau", "mean lifetime",2.2, 1.8, 3.5); 
+    RooRealVar tau("tau", "mean lifetime",2.2, 1.5, 3.5); 
 
-    RooRealVar bl("bl", "baseline", 1, 50, 200);
+    RooRealVar bl("bl", "baseline", 138., 100., 200.);
 
-    RooRealVar Nf("Nf", "Nf", 4200, 3500, 5500);
+    RooRealVar lambda("lambda", "lambda", 1.7e-6, 1e-6, 3e-6); 
 
     //fit pdfs
-    RooPolynomial pol0("pol0","pol0", cal_time_var ,bl);
+    RooPolynomial pol0("pol0","pol0",bl);
 
-    RooGenericPdf exp("exponential", "exp(-cal_time_var*(1/tau))", RooArgSet(cal_time_var,tau));
+    RooGenericPdf dark("background", "lambda*exp(-lambda*cal_time_var)", RooArgSet(cal_time_var,lambda));
+
+    RooGenericPdf exp("exponential", "(1/tau)*exp(-cal_time_var*(1/tau))", RooArgSet(cal_time_var,tau));
 
     //fraction of the first pdf (second one's fraction is 1-fraction)
-    RooRealVar  fraction("fraction", "fraction", 0.9,0,1);
+    RooRealVar  fraction("fraction", "fraction", 0.7,0,1);
 
-    RooAddPdf model("model", "model", RooArgList(exp, pol0), RooArgList(fraction));
+    RooAddPdf model("model", "model", RooArgList(exp, dark), RooArgList(fraction));
 
     model.fitTo(data);
 
     RooPlot *cal_time_frame = cal_time_var.frame();
 
-    data.plotOn(cal_time_frame);
-    model.plotOn(cal_time_frame);
+    data.plotOn(cal_time_frame, Name("data"));
+    model.plotOn(cal_time_frame, Name("Model"));
+    exp.plotOn(cal_time_frame, LineColor(kRed));
+    dark.plotOn(cal_time_frame, LineColor(kGreen), Name("exp background"));
+    //pol0.plotOn(cal_time_frame, LineColor(kMagenta), Name("Linear background"));
+
+    TLegend *legend = new TLegend();
+    legend->AddEntry(cal_time_frame->getObject(0), "Data", "p");
+    legend->AddEntry(cal_time_frame->getObject(1), "Total fit", "l");
+    legend->AddEntry(cal_time_frame->getObject(3), "Background", "l");
+    
+
+   //frame_pull->GetYaxis()->SetTitle("Pulls");
+
+   cout << "chi^2 = " << cal_time_frame->chiSquare() << endl;
+
+      // S h o w   r e s i d u a l   a n d   p u l l   d i s t s
+   // -------------------------------------------------------
+ 
+   // Construct a histogram with the residuals of the data w.r.t. the curve
+   RooHist *hresid = cal_time_frame->residHist("data", "model");
+ 
+   // Construct a histogram with the pulls of the data w.r.t the curve
+   RooHist *hpull = cal_time_frame->pullHist("data", "Model");
+ 
+   // Create a new frame to draw the residual distribution and add the distribution to the frame
+   RooPlot *frame2 = cal_time_var.frame(Title("Residual Distribution"), Bins(10));
+   frame2->addPlotable(hresid, "P");
+ 
+   // Create a new frame to draw the pull distribution and add the distribution to the frame
+   RooPlot *frame3 = cal_time_var.frame(Title("Pull Distribution"), Bins(10));
+   frame3->addPlotable(hpull, "P");
 
     cal_time_frame->Draw();
+    legend->Draw();
+    new TCanvas();
+    frame2->Draw();
+    new TCanvas();
+    frame3->Draw();
 
-    /*int j=0;
-    int N = data_tree->GetEntries();
-    for(int i =0; i<N; i++)
-    {
-        branch->GetEntry(i);
-        if(tempo.time<1.08 && tempo.time>0.5){j=j+1;}
-    }
-    cout << endl << endl << j << "  " << N <<  endl;
-
-    cal_time_var.setRange("range", 0.5, 1.08);
-    RooAbsReal *intModel= model.createIntegral(cal_time_var, NormSet(cal_time_var), Range("range"));
-    
-    double integrale = intModel->getVal();
-
-    RooAbsReal *totalIntegral= model.createIntegral(cal_time_var);
-    double intTOT= totalIntegral->getVal(); //to check that it gives 1 
-
-    cout << endl <<  integrale << "  " << integrale*N  <<  endl;
-    */
 }

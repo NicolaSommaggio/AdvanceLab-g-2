@@ -6,7 +6,8 @@
         "findMaximumSiPM22.C": "cpp",
         "findMaximumSiPMv2.C": "cpp",
         "Macro.C": "cpp",
-        "landauFit.C": "cpp"
+        "landauFit.C": "cpp",
+        "RooFit_prova.C": "cpp"
     },
 
     "workbench.colorCustomizations": {
