@@ -1428,3 +1428,51 @@ TGraphErrors* PlotDark(string darkfile)
 	*/
 	
 }
+
+
+TH1F* HalfLife(string input,int binNumber=100, double xmin=0.5, double xmax=14)
+{
+	ifstream fin(input.c_str());
+	string filename;
+	gStyle->SetOptFit();
+	double tempi;
+	std::array<double, 2> data;
+	TH1F* halflife = new TH1F( "time", "time", binNumber, 0,15 );
+	while(fin >> tempi)
+	{
+		halflife->Fill(tempi/66.66666);
+	}
+
+	TF1 f = TF1("fitfun", "[0]*exp(-1*x/[1])+[2]", xmin ,xmax);
+	f.SetParameters(500,2.1,50);
+	halflife->Fit(&f,"","",xmin,xmax);
+
+	halflife->Draw();
+	
+	cout<<"Tau"<<f.GetParameter(1)<<"	Err"<<f.GetParError(1)<<endl;
+	return halflife;
+   
+/*g->GetYaxis()->SetTitle("V");
+	g->GetXaxis()->SetTitle("gain ");
+	g->Draw("AP");
+	cout<<"Breakdown V:	"<<f->GetParameter(0)<<"	+-	"<<f->GetParError(0)<<endl;
+	TLegend *leg=new TLegend(0.2,0.2,0.4,0.4);
+	c5->SetGrid();
+
+	gPad->Update();
+	TPaveStats *st = (TPaveStats*)g->FindObject("stats");
+	st->SetX1NDC(0.15); //new x start position
+	st->SetX2NDC(0.5); //new x end position
+	st->SetY1NDC(0.68); //new x start position
+	st->SetY2NDC(0.88); //new x end position
+	c5->Draw();
+
+	string imgname = "graphs/gain.png";
+	c.SaveAs(imgname.c_str());
+	imgname = "graphs/gain.tex";
+	c.SaveAs(imgname.c_str());
+	imgname = "graphs/gain.C";
+	c.SaveAs(imgname.c_str());
+	*/
+	
+}
