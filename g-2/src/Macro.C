@@ -1440,12 +1440,12 @@ TH1F* HalfLife(string input,int binNumber=100, double xmin=0.5, double xmax=14)
 	TH1F* halflife = new TH1F( "time", "time", binNumber, 0,15 );
 	while(fin >> tempi)
 	{
-		halflife->Fill(tempi/66.66666);
+		halflife->Fill(tempi);
 	}
 
 	TF1 f = TF1("fitfun", "[0]*exp(-1*x/[1])+[2]", xmin ,xmax);
 	f.SetParameters(500,2.1,50);
-	halflife->Fit(&f,"","",xmin,xmax);
+	
 
 	halflife->Draw();
 	
